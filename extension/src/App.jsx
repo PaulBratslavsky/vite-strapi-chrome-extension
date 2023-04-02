@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import Dashboard from './components/Dashboard';
 import Header from "./components/Header";
 import LoginForm from "./components/LoginForm";
 import Logout from "./components/Logout";
@@ -46,7 +47,7 @@ export default function App() {
         <Route path="/" element={!user && <LoginForm setUser={setUser} />} />
         <Route
           path="/dashboard"
-          element={user && <Logout onClick={handleLogout} />}
+          element={user && <Dashboard><Logout onClick={handleLogout} /></Dashboard>}
         />
       </Routes>
     </div>
