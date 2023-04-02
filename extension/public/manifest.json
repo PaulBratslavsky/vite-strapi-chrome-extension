@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Strapi Summarize",
+  "description": "Strapi Powered Open AI Extension to summarize web articles.",
+  "version": "0.0.1",
+  "action": {
+    "default_popup": "index.html"
+  }
+}
