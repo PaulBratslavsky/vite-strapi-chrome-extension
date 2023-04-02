@@ -3,6 +3,10 @@
   "name": "Strapi Summarize",
   "description": "Strapi Powered Open AI Extension to summarize web articles.",
   "version": "0.0.1",
+  "permissions": [
+    "alarms",
+    "storage"
+  ],
   "action": {
     "default_popup": "index.html"
   }
