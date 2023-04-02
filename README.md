@@ -1,0 +1,1 @@
+# vite-strapi-chrome-extension
