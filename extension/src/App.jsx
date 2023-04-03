@@ -1,55 +1,50 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import Dashboard from './components/Dashboard';
+import { useState, useEffect } from "react";
+import Dashboard from "./components/Dashboard";
 import Header from "./components/Header";
 import LoginForm from "./components/LoginForm";
 import Logout from "./components/Logout";
 
+function isEmptyObject(obj) {
+  return JSON.stringify(obj) === "{}";
+}
+
+function checkLocalStorageAndSetState(setCredentials) {
+  chrome.storage.sync.get("credentials", (data) => {
+    if (!isEmptyObject(data)) {
+      setCredentials(JSON.parse(data.credentials));
+    } else {
+      setCredentials(null);
+    }
+  });
+}
 
 export default function App() {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(
-    () =>
-      chrome.storage.sync.get(
-        ["user"],
-        (result) => result.user && setUser(result.user)
-      ),
-    []
-  );
+  const [credentials, setCredentials] = useState(null);
 
   useEffect(() => {
-    if (user) {
-      chrome.storage.sync.set({
-        user: {
-          token: user.token,
-          user: {
-            id: user.user.id,
-            username: user.user.username,
-            email: user.user.email,
-          },
-        },
-      });
-    }
-  }, [user]);
+    checkLocalStorageAndSetState(setCredentials);
+  }, []);
 
-  useEffect(() => {
-    user ? navigate("/dashboard") : navigate("/");
-  }, [user, navigate]);
+  function handleLogin(credentials) {
+    chrome.storage.sync.set({ credentials: JSON.stringify(credentials) });
+    setCredentials(credentials);
+  }
 
-  const handleLogout = () => chrome.storage.sync.set({ user: null });
+  const handleLogout = () => {
+    setCredentials(null);
+    chrome.storage.sync.remove("credentials");
+  };
 
   return (
     <div className="App">
       <Header />
-      <Routes>
-        <Route path="/" element={!user && <LoginForm setUser={setUser} />} />
-        <Route
-          path="/dashboard"
-          element={user && <Dashboard><Logout onClick={handleLogout} /></Dashboard>}
-        />
-      </Routes>
+      {credentials ? (
+        <Dashboard credentials={credentials}>
+          <Logout onClick={handleLogout} />
+        </Dashboard>
+      ) : (
+        <LoginForm setCredentials={handleLogin} />
+      )}
     </div>
   );
 }

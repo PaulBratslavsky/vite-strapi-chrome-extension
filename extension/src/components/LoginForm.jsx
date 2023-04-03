@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const INITIAL_STATE = { email: "", password: "" };
 
-function LoginForm({ setUser }) {
+function LoginForm({ setCredentials }) {
   const [formData, setFormData] = useState(INITIAL_STATE);
   const [responseForm, setResponseForm] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -30,15 +30,13 @@ function LoginForm({ setUser }) {
         const data = await response.json();
         setResponseForm(data);
         setFormData(INITIAL_STATE);
-        setUser({
-          user: {
+        setCredentials({
             token: data.jwt,
             user: {
               id: data.user.id,
               username: data.user.username,
               email: data.user.email,
             },
-          },
         })
         setErrorMessage("");
       }
